@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+apply from: 'tinkerpatch.gradle'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+
+    defaultConfig {
+        applicationId "com.wechattinker.xz"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    signingConfigs {
+        //下面这个名字不能乱取，因为这个是打包文件中（·后面的名字）的名字中的
+        //暂时还是取release这个名字比较好，取别的名字到了打补丁包的时候可能找不到原来项目的名字了。。
+        //然后release里面的key中别字，也不能乱取，自己的秘钥叫什么就是叫什么的！
+        //打基包和补丁包是在android studio中点击右边的gradle，基包选择下面的build里面有个选release这个选项
+        release{
+            keyAlias 'key0'
+            keyPassword '123456'
+            storeFile file('C:/Users/xiong/Desktop/work/a.jks')
+            storePassword '123456'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    provided 'com.tinkerpatch.tinker:tinker-android-anno:1.9.1'
+    compile 'com.tinkerpatch.sdk:tinkerpatch-android-sdk:1.2.1'
+    compile "com.android.support:multidex:1.0.1"
+}
